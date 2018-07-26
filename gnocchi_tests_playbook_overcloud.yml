@@ -12,7 +12,15 @@
         shell: |
           source ~/stackrc;
           ssh-keyscan $(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2) >  ~/.ssh/known_hosts;
-          scp overcloudrc heat-admin@$(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2):stackrc
+          scp {overcloudrc_file} heat-admin@$(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2):stackrc
+
+- name: Tests on controller
+  hosts: controller-0
+  tasks:
+      - name: Clone git repo to controller
+        git:
+          repo: "https://github.com/sashkavyshka/gnocchi_auto.git"
+          dest: "~/gnocchi_auto"
 
       - name: Change permissions
         file:
@@ -21,22 +29,15 @@
 
       - name: Run python tests on overcloud
         shell: |
-          source ~/overcloudrc;
-          echo -n "RHELOSP_6835 " >> output.txt;
+          source ~/stackrc;
           python gnocchi_auto/RHELOSP_6835.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_6841 " >> output.txt;
           python gnocchi_auto/RHELOSP_6841.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_6842 " >> output.txt;
           python gnocchi_auto/RHELOSP_6842.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_6844 " >> output.txt;
           python gnocchi_auto/RHELOSP_6844.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_7043 " >> output.txt;
           python gnocchi_auto/RHELOSP_7043.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_7044 " >> output.txt;
           python gnocchi_auto/RHELOSP_7044.py;
-          echo $? >> output.txt;
+
+      - name: Run neutron tests on overcloud
+        shell: |
+          python gnocchi_auto/RHELOSP_6843.py;
+        when: product_version == "10"
