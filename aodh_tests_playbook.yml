@@ -12,7 +12,7 @@
       shell: |
         source ~/stackrc
         ssh-keyscan $(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2) >  ~/.ssh/known_hosts
-        scp {overcloudrc_file} heat-admin@$(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2):stackrc
+        scp overcloudrc heat-admin@$(openstack server list -f value | grep controller-0 | cut -d " " -f 4 | cut -d "=" -f 2):stackrc
 
 - name: Tests on controller
   hosts: controller-0
@@ -30,7 +30,28 @@
 
     - name: Run python tests on overcloud
       shell: |
-        source ~/stackrc
-        python gnocchi_auto/RHELOSP_8274_8275.py
-        python gnocchi_auto/RHELOSP_8276.py
-        python gnocchi_auto/RHELOSP_8277.py
+        source ~/overcloudrc;
+        echo -n "RHELOSP_8274 " >> output.txt;
+        python gnocchi_auto/RHELOSP_8274_8275.py;
+        out=$(echo $?);
+        echo $out >> output.txt;
+        echo -n "RHELOSP_8275 " >> output.txt;
+        out >> output.txt;
+        echo -n "RHELOSP_8276 " >> output.txt;
+        python gnocchi_auto/RHELOSP_8276.py;
+        echo $? >> output.txt;
+        echo -n "RHELOSP_8277 " >> output.txt;
+        python gnocchi_auto/RHELOSP_8277.py;
+        echo $? >> output.txt;
+        echo -n "RHELOSP_25031 " >> output.txt;
+        python gnocchi_auto/RHELOSP_25031.py;
+        echo $? >> output.txt;
+        echo -n "RHELOSP_25032 " >> output.txt;
+        python gnocchi_auto/RHELOSP_25032.py;
+        echo $? >> output.txt;
+        echo -n "RHELOSP_25033 " >> output.txt;
+        python gnocchi_auto/RHELOSP_25033.py;
+        echo $? >> output.txt;
+        echo -n "RHELOSP_25034 " >> output.txt;
+        python gnocchi_auto/RHELOSP_25034.py;
+        echo $? >> output.txt;

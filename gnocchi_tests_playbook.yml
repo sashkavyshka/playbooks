@@ -24,19 +24,33 @@
           source ~/overcloudrc;
           echo -n "RHELOSP_6835 " >> output.txt;
           python gnocchi_auto/RHELOSP_6835.py;
-          echo $? >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-6835;
+          fi
           echo -n "RHELOSP_6841 " >> output.txt;
           python gnocchi_auto/RHELOSP_6841.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_6842 " >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-6841;
+          fi
           python gnocchi_auto/RHELOSP_6842.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_6844 " >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-6842;
+          fi
           python gnocchi_auto/RHELOSP_6844.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_7043 " >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-6844;
+          fi
           python gnocchi_auto/RHELOSP_7043.py;
-          echo $? >> output.txt;
-          echo -n "RHELOSP_7044 " >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-7043;
+          fi
           python gnocchi_auto/RHELOSP_7044.py;
-          echo $? >> output.txt;
+          out=$(echo $?);
+          if [out=0]; then
+            echo "deployment completed" > /tmp/RHELOSP-7044;
+          fi
