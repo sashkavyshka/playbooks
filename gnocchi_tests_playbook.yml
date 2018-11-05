@@ -147,3 +147,33 @@
           if [ $out -eq 0 ]; then
             echo "deployment completed" > /tmp/RHELOSP-27782;
           fi;
+          python gnocchi_auto/RHELOSP_33717.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33717;
+          fi;
+          python gnocchi_auto/RHELOSP_33718.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33718;
+          fi;
+          python gnocchi_auto/RHELOSP_33719.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33719;
+          fi;
+          python gnocchi_auto/RHELOSP_33721.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33721;
+          fi;
+          python gnocchi_auto/RHELOSP_33723.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33723;
+          fi;
+          python gnocchi_auto/RHELOSP_33724.py;
+          out=$(echo $?);
+          if [ $out -eq 0 ]; then
+            echo "deployment completed" > /tmp/RHELOSP-33724;
+          fi;
