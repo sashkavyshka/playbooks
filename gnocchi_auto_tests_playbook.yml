@@ -1,0 +1,53 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Undercloud part of gnocchi testing
+  hosts: localhost
+  gather_facts: false
+  vars:
+    cases:
+      - 6835
+      - 6841
+      - 6842
+      - 6844
+      - 7043
+      - 7044
+      - 8274_8275
+      - 8276
+      - 8277
+      - 8292
+      - 8293
+      - 19869
+      - 20231
+      - 20232
+      - 20233
+      - 20235
+      - 20238
+      - 20239
+      - 20240
+      - 20241
+      - 24695
+      - 24696
+      - 24699
+      - 27779
+      - 27780
+      - 27781
+      - 27782
+      - 33717
+      - 33718
+      - 33719
+      - 33721
+      - 33723
+      - 33724
+  tasks:
+      - name: Clone git repo to undercloud
+        git:
+          repo: "https://github.com/sashkavyshka/gnocchi_auto.git"
+          dest: "~/gnocchi_auto"
+
+      - name: Python tests {{ item }}
+        shell: |
+          source ~/overcloudrc
+          echo {{ item }}
+          python gnocchi_auto/RHELOSP_{{ item }}.py
+        register: command_result
+        loop: "{{ cases }}"

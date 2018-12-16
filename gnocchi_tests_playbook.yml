@@ -1,7 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
 - name: Undercloud part of gnocchi testing
-  hosts: localhost
+  hosts: undercloud-0
   tasks:
       - name: Clone git repo to undercloud
         git:
