@@ -1,9 +1,10 @@
 #!/usr/bin/env ansible-playbook
 ---
 - name: Undercloud part of gnocchi testing
-  hosts: localhost
+  hosts: undercloud-0
   gather_facts: false
   vars:
+    output_file: test_run_result.out
     cases:
       - 6835
       - 6841
@@ -11,7 +12,8 @@
       - 6844
       - 7043
       - 7044
-      - 8274_8275
+      - 8274
+      - 8275
       - 8276
       - 8277
       - 8292
@@ -39,15 +41,42 @@
       - 33723
       - 33724
   tasks:
+      - name: Delete old file if existing
+        file:
+          path: "{{ output_file }}"
+          state: absent
+
+      - name: Create output file
+        file:
+          path: "{{ output_file }}"
+          mode: "u=rw,g=r,o=r"
+          state: touch
+
       - name: Clone git repo to undercloud
         git:
           repo: "https://github.com/sashkavyshka/gnocchi_auto.git"
           dest: "~/gnocchi_auto"
 
-      - name: Python tests {{ item }}
+      - name: Python tests {{ cases }}
         shell: |
-          source ~/overcloudrc
-          echo {{ item }}
-          python gnocchi_auto/RHELOSP_{{ item }}.py
+          source ~/overcloudrc > /dev/null
+          python gnocchi_auto/RHELOSP_{{ item }}.py > RHEOSP-{{ item }}.log && echo RHELOSP-{{ item }}
         register: command_result
         loop: "{{ cases }}"
+        ignore_errors: true
+
+      - name: Add outputs
+        lineinfile:
+          path: "{{ output_file }}"
+          line: "{{ item.stdout }}"
+        with_items:
+          - "{{ command_result.results }}"
+
+      - name: Remove empty lines
+        lineinfile:
+          path: "{{ output_file }}"
+          line: ''
+          state: absent
+
+
+
