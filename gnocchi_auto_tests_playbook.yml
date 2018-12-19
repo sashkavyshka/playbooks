@@ -45,6 +45,14 @@
         file:
           path: "{{ output_file }}"
           state: absent
+        ignore_errors: true
+
+      - name: Delete old logs if existing
+        file:
+          path: RHELOSP-{{ item }}.log
+          state: absent
+        with_items: "{{ cases }}"
+        ignore_errors: true
 
       - name: Create output file
         file:
@@ -60,9 +68,9 @@
       - name: Python tests {{ cases }}
         shell: |
           source ~/overcloudrc > /dev/null
-          python gnocchi_auto/RHELOSP_{{ item }}.py > RHEOSP-{{ item }}.log && echo RHELOSP-{{ item }}
+          python gnocchi_auto/RHELOSP_{{ item }}.py > RHELOSP-{{ item }}.log && echo RHELOSP-{{ item }}
         register: command_result
-        loop: "{{ cases }}"
+        with_items: "{{ cases }}"
         ignore_errors: true
 
       - name: Add outputs
