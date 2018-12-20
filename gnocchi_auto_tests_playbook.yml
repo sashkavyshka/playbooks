@@ -86,5 +86,12 @@
           line: ''
           state: absent
 
+      - name: Copy to localhost
+        fetch:
+          src: "{{ output_file }}"
+          dest: ./{{ output_file }}
+          flat: yes
+
+
 
 
