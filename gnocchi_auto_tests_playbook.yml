@@ -67,7 +67,7 @@
       - name: Python tests {{ cases }}
         shell: |
           source ~/overcloudrc > /dev/null
-          python gnocchi_auto/RHELOSP_{{ item }}.py > RHELOSP-{{ item }}.log && echo RHELOSP-{{ item }}=passed
+          python2 gnocchi_auto/RHELOSP_{{ item }}.py > RHELOSP-{{ item }}.log && echo RHELOSP-{{ item }}=passed
         register: command_result
         with_items: "{{ cases }}"
         ignore_errors: true
