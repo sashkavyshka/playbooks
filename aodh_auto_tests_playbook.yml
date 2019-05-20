@@ -1,0 +1,95 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Undercloud part of gnocchi testing
+  hosts: undercloud-0
+  gather_facts: false
+  vars:
+    output_file: test_run_result.out
+    cases:
+      - 6835
+      - 6841
+      - 6842
+      - 6844
+      - 7043
+      - 7044
+      - 8274
+      - 8275
+      - 8276
+      - 8277
+      - 8292
+      - 8293
+      - 19869
+      - 20231
+      - 20232
+      - 20233
+      - 20235
+      - 20236
+      - 20238
+      - 20239
+      - 20240
+      - 20241
+      - 24695
+      - 24696
+      - 24699
+      - 27779
+      - 27780
+      - 27781
+      - 27782
+      - 33718
+      - 35985
+
+  tasks:
+      - name: Delete old file if existing
+        file:
+          path: "{{ output_file }}"
+          state: absent
+        ignore_errors: true
+
+      - name: Delete old logs if existing
+        file:
+          path: RHELOSP-{{ item }}.log
+          state: absent
+        with_items: "{{ cases }}"
+        ignore_errors: true
+
+      - name: Create output file
+        file:
+          path: "{{ output_file }}"
+          mode: "u=rw,g=r,o=r"
+          state: touch
+
+      - name: Clone git repo to undercloud
+        git:
+          repo: "https://github.com/sashkavyshka/gnocchi_auto.git"
+          dest: "~/gnocchi_auto"
+
+      - name: Python tests {{ cases }}
+        shell: |
+          source ~/overcloudrc > /dev/null
+          python2 gnocchi_auto/RHELOSP_{{ item }}.py > RHELOSP-{{ item }}.log && echo RHELOSP-{{ item }}=passed
+        register: command_result
+        with_items: "{{ cases }}"
+        ignore_errors: true
+
+      - name: Add outputs
+        lineinfile:
+          path: "{{ output_file }}"
+          line: "{{ item.stdout }}"
+        with_items:
+          - "{{ command_result.results }}"
+
+      - name: Remove empty lines
+        lineinfile:
+          path: "{{ output_file }}"
+          line: ''
+          state: absent
+
+      - name: Copy to localhost
+        fetch:
+          src: "{{ output_file }}"
+          dest: ../{{ output_file }}
+          flat: yes
+
+
+
+
